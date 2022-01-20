@@ -23,13 +23,17 @@ public class Numerical implements ICellContent, IOperand {
         return value;
     }
 
+    @Override
     public void setValue(double value) {
         this.value = value;
     }
 
+
     public String getContent() {
         return content;
     }
+
+
 
     @Override
     public String toString() {

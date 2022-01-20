@@ -10,6 +10,7 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
 import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.PostfixEvaluator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,64 +37,6 @@ public class Spreadsheet {
         this.maxRow = 1;
     }
 
-    /**
-     * Create and add a new cell if the given coordinate does not exist.
-     * Update the cell content of an existing cell if the given coordinate exists.
-     * @param coordinate
-     * @param content
-     * @return
-     */
-
-    public String editCell(String coordinate, String content){
-
-        Coordinate location = new Coordinate(coordinate);
-        Cell cell = this.cells.get(location);
-
-        if (cell == null){
-            cell = this.cellFactory.makeCell(coordinate, content);
-            cells.put(cell.getCoordinate(), cell);
-
-            // Update max row and column if necessary
-            if ( this.colToIndex(location.getColumn()) > this.colToIndex(this.maxCol)) {
-                this.maxCol = location.getColumn();
-                System.out.println(this.maxCol);
-            }
-
-            if (location.getRow() > this.maxRow) {
-                this.maxRow = location.getRow();
-                System.out.println(this.maxRow);
-            }
-
-        }else {
-            // ESTO TIRA PERO TENGO QUE DECIDIR DONDE METERLO. POSIBLEMENTE EN EL POSTFIX EVALUATOR ¿NO?
-            // Y LO LLAMOS DES DEL CONTROLLER.
-            if(content.startsWith("=")){
-                IExpressionGenerator gen = null;
-                try{
-                    IFormulaExpressionFactory factory = IFormulaExpressionFactory.getInstance("DEFAULT");
-                    gen = factory.createExpressionGenerator("postfix",factory);
-                    PostfixEvaluator pe = new PostfixEvaluator(this);
-                    gen.generateFromString(content.substring(1));
-
-                    StringBuilder postfixText = new StringBuilder();
-                    for (IToken c : gen.getResult()) {
-                        postfixText.append(c.getText()).append(" ");
-                    }
-                    System.out.println("Postfix expression: " + postfixText);
-
-                    double result = pe.evaluate(gen.getResult());
-                    System.out.println("Result: " + result);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
-
-            }
-            cell.setContent(this.contentFactory.makeContent(content));
-
-        }
-
-        return "Cell successfully edited at "+cell.getCoordinate().toString()+" :\n" + cell.getContent().toString();
-    }
 
     /**
      * Transforms the column label to a numerical index. For example A -> 1, Z -> 26, AB -> 28
@@ -129,6 +72,23 @@ public class Spreadsheet {
         return new String(buf);
     }
 
+    /**
+     * Checks and updates the max column and max row of the
+     * spreadsheet if needed.
+     * @param coordinate
+     */
+    public void updateCorners(Coordinate coordinate){
+        if ( this.colToIndex(coordinate.getColumn()) > this.colToIndex(this.maxCol)) {
+            this.maxCol = coordinate.getColumn();
+            System.out.println(this.maxCol);
+        }
+
+        if (coordinate.getRow() > this.maxRow) {
+            this.maxRow = coordinate.getRow();
+            System.out.println(this.maxRow);
+        }
+    }
+
     public String getMaxCol() {
         return maxCol;
     }
@@ -139,5 +99,20 @@ public class Spreadsheet {
 
     public HashMap<Coordinate, Cell> getCells() {
         return cells;
+    }
+
+    public void displaySpreadsheet(){
+        for(int row=1; row <= this.maxRow; row++){
+            System.out.println(String.join(" ", Collections.nCopies(this.colToIndex(this.maxCol), "----")));
+            for (int col=1; col <= this.colToIndex(this.maxCol); col++){
+                Cell cell = this.cells.get(new Coordinate(row, this.indexToCol(col)));
+                if (cell == null){
+                    System.out.print("| 0 |");
+                }else {
+                    System.out.print("| " + cell.getContent().getContent() + " ");
+                }
+            }
+            System.out.println("");
+        }
     }
 }

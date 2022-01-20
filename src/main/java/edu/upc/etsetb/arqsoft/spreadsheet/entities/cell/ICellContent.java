@@ -11,4 +11,5 @@ public interface ICellContent {
 
     public abstract String getContent();
     public abstract double getValue() throws NoNumericValue;
+    public void setValue(double value);
 }

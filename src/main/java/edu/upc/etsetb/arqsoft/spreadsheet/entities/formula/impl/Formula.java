@@ -15,53 +15,33 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
  */
 public class Formula implements ICellContent {
     protected String content;
-    protected float value;
+    protected double value;
     protected ArrayList<IToken> formulaContent;
 
     public Formula(String content){
         this.content = content;
         this.formulaContent = new ArrayList<>();
-        //Bbbbitch u better change this (Esto es un mensaje para mi Juan Carlos lo siento si se me ha olvidado borrarlo)
-        this.value = 0;
-
     }
 
-    private float generatePostfix() {
-        IExpressionGenerator gen = null;
-        try {
-            IFormulaExpressionFactory factory = IFormulaExpressionFactory.getInstance("DEFAULT");
-            gen = factory.createExpressionGenerator("postfix",factory);
-        } catch (Exception ex)  {
-            System.out.println(ex.getMessage());
-            System.out.println("Error while trying to build the postfix generator. Details follow. " + ex.getMessage());
-            System.exit(-1);
-        }
 
-        try {
-            gen.generateFromString(this.content.substring(1));
-            for (IToken c : gen.getResult()) {
-                System.out.println("Token type: " + c.getType().toString());
-                System.out.println(c.getText());
-                this.formulaContent.add(c);
-            }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Error while trying to generate the postfix expression. Details follow. " + ex.getMessage());
-
-        }
-
-        return 0;
+    @Override
+    public void setValue(double value) {
+        this.value = value;
     }
 
     public String getContent() {
         return content;
     }
 
+
+
     @Override
     public double getValue() throws NoNumericValue {
-        return 0;
+        return this.value;
     }
 
     @Override

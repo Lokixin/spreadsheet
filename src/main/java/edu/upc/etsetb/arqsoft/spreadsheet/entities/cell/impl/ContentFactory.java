@@ -37,7 +37,6 @@ public class ContentFactory {
     public ICellContent makeContent(String content){
 
         EContentType contentType = this.decideContent(content);
-        ICellContent cellContent = null;
 
         switch (contentType){
             case NUMERIC:
