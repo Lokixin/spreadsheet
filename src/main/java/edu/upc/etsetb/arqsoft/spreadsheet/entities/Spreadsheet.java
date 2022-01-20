@@ -41,7 +41,7 @@ public class Spreadsheet {
      * @param column
      * @return
      */
-    public int colToIndex(String column){
+    public static int colToIndex(String column){
         int alphabetLength = 26;
         char[] colArray = column.toCharArray();
         int acc = 0;
@@ -59,7 +59,7 @@ public class Spreadsheet {
      * @param index
      * @return
      */
-    public String indexToCol(int index) {
+    public static String indexToCol(int index) {
         char[] buf = new char[(int) floor(log(25 * (index + 1)) / log(26))];
         for (int i = buf.length - 1; i >= 0; i--) {
 

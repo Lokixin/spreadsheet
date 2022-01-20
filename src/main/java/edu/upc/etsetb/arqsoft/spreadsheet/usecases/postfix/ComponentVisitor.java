@@ -4,6 +4,7 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.Spreadsheet;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.ClosingBrackent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.OpenBracket;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Cell;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.NoNumericValue;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Numerical;
@@ -69,8 +70,9 @@ public class ComponentVisitor implements IComponentVisitor {
     @Override
     public void visitCoordinate(Coordinate coordinate) {
         try {
-            ICellContent cellContent = this.spreadsheet.getCells().get(coordinate).getContent();
-            if (cellContent == null) {
+            Cell cell = this.spreadsheet.getCells().get(coordinate);
+
+            if (cell == null) {
                 //We suppose that empty cells can be interpreted as 0.0
                 if(isFunctionArgument){
                     this.currentFunction.addArgument(0.0);
@@ -79,9 +81,9 @@ public class ComponentVisitor implements IComponentVisitor {
                 }
             } else {
                 if (isFunctionArgument){
-                    this.currentFunction.addArgument(cellContent.getValue());
+                    this.currentFunction.addArgument(cell.getContent().getValue());
                 }else{
-                    stack.add(cellContent.getValue());
+                    stack.add(cell.getContent().getValue());
                 }
             }
         }catch (NoNumericValue e){

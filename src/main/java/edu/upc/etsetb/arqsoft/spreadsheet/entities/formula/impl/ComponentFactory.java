@@ -2,11 +2,13 @@ package edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.ClosingBrackent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.OpenBracket;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.CellRange;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Numerical;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IFormulaContent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.functions.FunctionFactory;
+
 
 
 public class ComponentFactory {
@@ -30,6 +32,9 @@ public class ComponentFactory {
                 return new ClosingBrackent();
             case FUNCTION:
                 return functionFactory.makeFunction(token.getText());
+            case RANGE:
+                System.out.println("[LOG] -> Range generated");
+                return new CellRange(token.getText());
             default:
                 return null;
         }

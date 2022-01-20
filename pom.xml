@@ -33,9 +33,10 @@
     </dependency>
 
     <dependency>
-      <groupId>edu.upc.etsetb.arqsoft</groupId>
-      <artifactId>spreadsheetMarkerForStudents</artifactId>
+      <groupId>edu.upc.ac.poo</groupId>
+      <artifactId>CorrectorGenerico20211222</artifactId>
       <version>1.0-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
 
@@ -52,6 +53,7 @@
       <scope>test</scope>
       <version>2.44.0</version>
     </dependency>
+
     <dependency>
       <groupId>com.opera</groupId>
       <artifactId>operadriver</artifactId>
