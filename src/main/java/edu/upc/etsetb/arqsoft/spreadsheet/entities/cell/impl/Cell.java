@@ -29,6 +29,9 @@ public class Cell {
     }
 
     public ICellContent getContent() {
+        if(content == null){
+            return new Numerical("0.0");
+        }
         return content;
     }
 

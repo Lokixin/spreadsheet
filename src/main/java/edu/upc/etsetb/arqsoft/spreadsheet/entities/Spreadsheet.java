@@ -1,18 +1,9 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.entities;
 
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Cell;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.CellFactory;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.ContentFactory;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IExpressionGenerator;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IFormulaExpressionFactory;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
-import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.PostfixEvaluator;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
@@ -37,6 +28,13 @@ public class Spreadsheet {
         this.maxRow = 1;
     }
 
+    public Cell getCell(Coordinate location){
+        if (this.cells.containsKey(location)){
+            return this.cells.get(location);
+        }else {
+            return new Cell(location, new Numerical("0.0"));
+        }
+    }
 
     /**
      * Transforms the column label to a numerical index. For example A -> 1, Z -> 26, AB -> 28
@@ -109,7 +107,11 @@ public class Spreadsheet {
                 if (cell == null){
                     System.out.print("| 0 |");
                 }else {
-                    System.out.print("| " + cell.getContent().getContent() + " ");
+                    try {
+                        System.out.print(new StringBuilder().append("| ").append(cell.getContent().getContent()).append(" ").append(cell.getContent().getValue()).append(" ").toString());
+                    } catch (NoNumericValue e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             System.out.println("");

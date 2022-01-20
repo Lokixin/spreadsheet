@@ -1,9 +1,12 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.Spreadsheet;
+
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IFormulaContent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl.ComponentFactory;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl.Formula;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
+
 
 import java.util.Iterator;
 import java.util.List;
@@ -13,17 +16,19 @@ public class PostfixEvaluator {
     protected ComponentVisitor visitor;
     protected ComponentFactory factory;
 
+
     public PostfixEvaluator(Spreadsheet spreadsheet){
         this.visitor = new ComponentVisitor(spreadsheet);
         this.factory = new ComponentFactory();
     }
 
-    public double evaluate(List<IToken> contents){
+    public double evaluate(List<IToken> contents, Formula currentFormula){
         Iterator<IToken> it = contents.iterator();
 
         IFormulaContent component = null;
         while (it.hasNext()){
             component = factory.makeComponent(it.next());
+            currentFormula.addComponent(component);
             if (component == null) continue;
             component.acceptVisitor(this.visitor);
         }
