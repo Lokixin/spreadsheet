@@ -8,5 +8,5 @@ import java.util.Stack;
 public interface IFunction extends IArgument, IOperand {
 
     public abstract double operate();
-    public void setStack(Stack<Double> stack);
+
 }

@@ -25,7 +25,6 @@ public class PostfixEvaluator {
         while (it.hasNext()){
             component = factory.makeComponent(it.next());
             if (component == null) continue;
-            System.out.println("Component: " + component);
             component.acceptVisitor(this.visitor);
         }
         return visitor.getResult();

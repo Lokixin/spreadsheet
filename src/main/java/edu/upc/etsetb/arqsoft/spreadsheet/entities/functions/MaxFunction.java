@@ -4,27 +4,24 @@ import java.util.Stack;
 
 public class MaxFunction extends AFunction {
 
-    protected Stack<Double> stack;
-    public MaxFunction(){
-    }
+
+    public MaxFunction(){}
+
     public double operate(){
         double max = 0;
-        if(!stack.empty()){
-            max = stack.pop();
-        }else {
-            return 0;
+        if(!this.arguments.isEmpty()) {
+            max = this.arguments.get(0);
+        }else{
+            return max;
         }
 
-        while (!stack.isEmpty()){
-            double newVal = stack.pop();
-            if (newVal > max) {
-                max = newVal;
+        for (Double num: this.arguments){
+            if (num > max){
+                max = num;
             }
         }
-        return max;
-    }
 
-    public void setStack(Stack<Double> stack) {
-        this.stack = stack;
+        this.arguments.clear();
+        return max;
     }
 }

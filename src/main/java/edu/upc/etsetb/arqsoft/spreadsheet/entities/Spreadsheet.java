@@ -68,15 +68,21 @@ public class Spreadsheet {
             // ESTO TIRA PERO TENGO QUE DECIDIR DONDE METERLO. POSIBLEMENTE EN EL POSTFIX EVALUATOR ¿NO?
             // Y LO LLAMOS DES DEL CONTROLLER.
             if(content.startsWith("=")){
-                System.out.println("Formula introduced");
                 IExpressionGenerator gen = null;
                 try{
                     IFormulaExpressionFactory factory = IFormulaExpressionFactory.getInstance("DEFAULT");
                     gen = factory.createExpressionGenerator("postfix",factory);
                     PostfixEvaluator pe = new PostfixEvaluator(this);
                     gen.generateFromString(content.substring(1));
+
+                    StringBuilder postfixText = new StringBuilder();
+                    for (IToken c : gen.getResult()) {
+                        postfixText.append(c.getText()).append(" ");
+                    }
+                    System.out.println("Postfix expression: " + postfixText);
+
                     double result = pe.evaluate(gen.getResult());
-                    System.out.println("Result: "+result);
+                    System.out.println("Result: " + result);
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }

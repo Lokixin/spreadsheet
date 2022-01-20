@@ -2,6 +2,8 @@ package edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.Spreadsheet;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.ClosingBrackent;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.function.OpenBracket;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.NoNumericValue;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Numerical;
@@ -16,10 +18,14 @@ public class ComponentVisitor implements IComponentVisitor {
 
     protected Stack<Double> stack;
     protected Spreadsheet spreadsheet;
+    protected boolean isFunctionArgument;
+    protected AFunction currentFunction;
 
     public ComponentVisitor(Spreadsheet spreadsheet){
         this.spreadsheet = spreadsheet;
-        this.stack = new Stack<>();
+        this.stack = new Stack<Double>();
+        this.isFunctionArgument = false;
+        this.currentFunction = null;
     }
 
     public double getResult(){
@@ -41,13 +47,22 @@ public class ComponentVisitor implements IComponentVisitor {
 
     @Override
     public void visitANumber(Numerical number) {
-        this.stack.add(number.getValue());
+        if (isFunctionArgument){
+            this.currentFunction.addArgument(number.getValue());
+        }else {
+            this.stack.add(number.getValue());
+        }
+
     }
 
     @Override
-    public void visitFunction(IFunction function) {
+    public void visitFunction(AFunction function) {
+        /*System.out.println("Stack passed in visitFunction: ");
+        this.stack.forEach(System.out::println);
+
         function.setStack(this.stack);
-        this.stack.add(function.operate());
+        this.stack.add(function.operate());*/
+        this.currentFunction = function;
     }
 
 
@@ -57,14 +72,31 @@ public class ComponentVisitor implements IComponentVisitor {
             ICellContent cellContent = this.spreadsheet.getCells().get(coordinate).getContent();
             if (cellContent == null) {
                 //We suppose that empty cells can be interpreted as 0.0
-                stack.add(0.0);
+                if(isFunctionArgument){
+                    this.currentFunction.addArgument(0.0);
+                }else{
+                    this.stack.add(0.0);
+                }
             } else {
-                stack.add(cellContent.getValue());
+                if (isFunctionArgument){
+                    this.currentFunction.addArgument(cellContent.getValue());
+                }else{
+                    stack.add(cellContent.getValue());
+                }
             }
         }catch (NoNumericValue e){
             System.out.println(e.getMessage());
         }
+    }
 
+    @Override
+    public void visitOpenBracket(OpenBracket openBracket) {
+        this.isFunctionArgument = true;
+    }
 
+    @Override
+    public void visitClosingBracket(ClosingBrackent closingBrackent) {
+        this.stack.add(this.currentFunction.operate());
+        this.isFunctionArgument = false;
     }
 }

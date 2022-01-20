@@ -22,7 +22,7 @@ public class Formula implements ICellContent {
         this.content = content;
         this.formulaContent = new ArrayList<>();
         //Bbbbitch u better change this (Esto es un mensaje para mi Juan Carlos lo siento si se me ha olvidado borrarlo)
-        this.value = this.generatePostfix();
+        this.value = 0;
 
     }
 
