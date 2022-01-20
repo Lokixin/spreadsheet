@@ -1,31 +1,70 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix;
 
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.Spreadsheet;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.NoNumericValue;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Numerical;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl.Operator;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.functions.AFunction;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.functions.IFunction;
 
-import java.util.function.IntFunction;
+import java.util.Stack;
+
 
 public class ComponentVisitor implements IComponentVisitor {
 
+    protected Stack<Double> stack;
+    protected Spreadsheet spreadsheet;
+
+    public ComponentVisitor(Spreadsheet spreadsheet){
+        this.spreadsheet = spreadsheet;
+        this.stack = new Stack<>();
+    }
+
+    public double getResult(){
+        return this.stack.pop();
+    }
 
     @Override
     public void visitOperator(Operator op) {
+        try{
+            double secondOperand = stack.pop();
+            double firstOperand = stack.pop();
+            double result = op.operate(firstOperand, secondOperand);
+            stack.add(result);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
     }
 
     @Override
     public void visitANumber(Numerical number) {
-
+        this.stack.add(number.getValue());
     }
 
     @Override
-    public void visitFunction(IntFunction function) {
-
+    public void visitFunction(IFunction function) {
+        function.setStack(this.stack);
+        this.stack.add(function.operate());
     }
+
 
     @Override
     public void visitCoordinate(Coordinate coordinate) {
+        try {
+            ICellContent cellContent = this.spreadsheet.getCells().get(coordinate).getContent();
+            if (cellContent == null) {
+                //We suppose that empty cells can be interpreted as 0.0
+                stack.add(0.0);
+            } else {
+                stack.add(cellContent.getValue());
+            }
+        }catch (NoNumericValue e){
+            System.out.println(e.getMessage());
+        }
+
 
     }
 }

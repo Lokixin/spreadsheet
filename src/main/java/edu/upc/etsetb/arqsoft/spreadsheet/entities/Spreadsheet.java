@@ -4,8 +4,14 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Cell;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.CellFactory;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.ContentFactory;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IExpressionGenerator;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IFormulaExpressionFactory;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.PostfixEvaluator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
@@ -59,7 +65,25 @@ public class Spreadsheet {
             }
 
         }else {
+            // ESTO TIRA PERO TENGO QUE DECIDIR DONDE METERLO. POSIBLEMENTE EN EL POSTFIX EVALUATOR ¿NO?
+            // Y LO LLAMOS DES DEL CONTROLLER.
+            if(content.startsWith("=")){
+                System.out.println("Formula introduced");
+                IExpressionGenerator gen = null;
+                try{
+                    IFormulaExpressionFactory factory = IFormulaExpressionFactory.getInstance("DEFAULT");
+                    gen = factory.createExpressionGenerator("postfix",factory);
+                    PostfixEvaluator pe = new PostfixEvaluator(this);
+                    gen.generateFromString(content.substring(1));
+                    double result = pe.evaluate(gen.getResult());
+                    System.out.println("Result: "+result);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+
+            }
             cell.setContent(this.contentFactory.makeContent(content));
+
         }
 
         return "Cell successfully edited at "+cell.getCoordinate().toString()+" :\n" + cell.getContent().toString();

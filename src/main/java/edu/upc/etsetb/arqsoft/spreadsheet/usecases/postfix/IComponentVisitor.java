@@ -5,8 +5,6 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Numerical;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl.Operator;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.functions.IFunction;
 
-import java.util.function.IntFunction;
-
 public interface IComponentVisitor {
     public abstract void visitOperator(Operator op);
     public abstract void visitANumber(Numerical number);

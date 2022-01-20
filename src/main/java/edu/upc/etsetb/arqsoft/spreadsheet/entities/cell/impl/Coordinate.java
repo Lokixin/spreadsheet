@@ -1,5 +1,8 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl;
 
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IOperand;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.ComponentVisitor;
+
 import java.util.Objects;
 
 /**
@@ -9,7 +12,7 @@ import java.util.Objects;
  * Columns are Strings following the alphabetical order.
  */
 
-public class Coordinate {
+public class Coordinate implements IOperand {
 
     protected int row;
     protected String column;
@@ -64,5 +67,10 @@ public class Coordinate {
                 "row=" + row +
                 ", column='" + column + '\'' +
                 '}';
+    }
+
+    @Override
+    public void acceptVisitor(ComponentVisitor visitor) {
+        visitor.visitCoordinate(this);
     }
 }

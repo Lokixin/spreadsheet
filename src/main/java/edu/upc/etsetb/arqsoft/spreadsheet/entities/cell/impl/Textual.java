@@ -17,8 +17,8 @@ public class Textual implements ICellContent {
         this.value = content;
     }
 
-    public String getValue() {
-        return value;
+    public double getValue() throws NoNumericValue{
+        throw new NoNumericValue("You're trying to opperate with a textual cell");
     }
 
     public void setValue(String value) {

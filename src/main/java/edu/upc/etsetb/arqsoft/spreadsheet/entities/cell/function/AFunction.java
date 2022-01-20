@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * - MEAN
  * - SUM
  */
-public abstract class AFunction implements IOperand, IArgument {
+public abstract class AFunction implements IArgument {
 
     protected ArrayList<IArgument> functionArguments;
 

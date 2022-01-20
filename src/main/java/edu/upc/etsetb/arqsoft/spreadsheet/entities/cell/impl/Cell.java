@@ -2,6 +2,7 @@ package edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IOperand;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.ComponentVisitor;
 
 /**
  * Concrete class representing a cell inside a spreadsheet.
@@ -9,7 +10,7 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IOperand;
  * and its content.
  */
 
-public class Cell implements IOperand {
+public class Cell {
 
     protected Coordinate coordinate;
     protected ICellContent content;
@@ -34,4 +35,6 @@ public class Cell implements IOperand {
     public void setContent(ICellContent content) {
         this.content = content;
     }
+
+
 }

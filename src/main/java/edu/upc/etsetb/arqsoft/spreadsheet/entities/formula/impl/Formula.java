@@ -3,7 +3,7 @@ package edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl;
 import java.util.ArrayList;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IFormulaContent;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.NoNumericValue;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IExpressionGenerator;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IFormulaExpressionFactory;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
@@ -13,7 +13,7 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
  * provided by the user. Also, the value resulting of the formula
  * computation.
  */
-public class Formula implements ICellContent, IFormulaContent {
+public class Formula implements ICellContent {
     protected String content;
     protected float value;
     protected ArrayList<IToken> formulaContent;
@@ -21,7 +21,7 @@ public class Formula implements ICellContent, IFormulaContent {
     public Formula(String content){
         this.content = content;
         this.formulaContent = new ArrayList<>();
-
+        //Bbbbitch u better change this (Esto es un mensaje para mi Juan Carlos lo siento si se me ha olvidado borrarlo)
         this.value = this.generatePostfix();
 
     }
@@ -45,6 +45,7 @@ public class Formula implements ICellContent, IFormulaContent {
                 this.formulaContent.add(c);
             }
 
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Error while trying to generate the postfix expression. Details follow. " + ex.getMessage());
@@ -59,10 +60,17 @@ public class Formula implements ICellContent, IFormulaContent {
     }
 
     @Override
+    public double getValue() throws NoNumericValue {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "Formula{" +
                 "content='" + content + '\'' +
                 ", value=" + value +
                 '}';
     }
+
+
 }

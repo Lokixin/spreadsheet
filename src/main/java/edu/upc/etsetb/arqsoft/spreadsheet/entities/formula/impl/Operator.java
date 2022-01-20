@@ -1,6 +1,7 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.impl;
 
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IFormulaContent;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.ComponentVisitor;
 
 /**
  * Operator class represents the possible operators
@@ -20,4 +21,26 @@ public class Operator implements IFormulaContent {
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
+
+    public double operate(double a, double b) throws InvalidOperator{
+        //TO BE IMPLEMENTED
+        switch (this.symbol){
+            case "+":
+                return a+b;
+            case "-":
+                return a-b;
+            case "/":
+                return a/b;
+            case "*":
+                return a*b;
+            default:
+                throw new InvalidOperator("Invalid operator found while operating");
+        }
+    }
+
+
+    public void acceptVisitor(ComponentVisitor visitor){
+        visitor.visitOperator(this);
+    }
 }
+
