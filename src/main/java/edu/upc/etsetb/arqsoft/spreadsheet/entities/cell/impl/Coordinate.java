@@ -1,5 +1,6 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl;
 
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.BadCoordinateException;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.IOperand;
 import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.ComponentVisitor;
 
@@ -30,6 +31,39 @@ public class Coordinate implements IOperand {
         String[] colRow = coordinate.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         this.column = colRow[0].toUpperCase();
         this.row = Integer.parseInt(colRow[1]);
+    }
+
+
+    public boolean cellCoordinateValidation(String cellCoordinate) throws BadCoordinateException {
+        String[] separate = cellCoordinate.split("(?<=\\D)(?=\\d)");
+        if (columnValid(separate[0]) == false || rowValid(separate[1]) == false) {
+            throw new BadCoordinateException("Incorrect Cell Coordinate format");
+        }
+        return true;
+    }
+
+
+    public boolean rowValid(String row) {
+        try {
+            Integer.parseInt(row);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean columnValid(String column) {
+        try {
+            char[] coorChar = column.toCharArray();
+            for (int i = 0; i < coorChar.length; i++) {
+                if (65 > (int) coorChar[i] || (int) coorChar[i] > 90) {
+                    throw new Exception();
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public int getRow() {

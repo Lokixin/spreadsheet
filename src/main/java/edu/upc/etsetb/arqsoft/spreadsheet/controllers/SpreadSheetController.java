@@ -1,11 +1,8 @@
 package edu.upc.etsetb.arqsoft.spreadsheet.controllers;
 
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.Spreadsheet;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.*;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.ICellContent;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Cell;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.CellFactory;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.ContentFactory;
-import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.Coordinate;
+import edu.upc.etsetb.arqsoft.spreadsheet.entities.cell.impl.*;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IExpressionGenerator;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.IFormulaExpressionFactory;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.expression.UnkownFactoryException;
@@ -14,20 +11,19 @@ import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.BadTokenExcept
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.IToken;
 import edu.upc.etsetb.arqsoft.spreadsheet.entities.formula.tokens.ITokenizer;
 import edu.upc.etsetb.arqsoft.spreadsheet.usecases.externalfiles.SpreadsheetSaver;
-import edu.upc.etsetb.arqsoft.spreadsheet.usecases.parser.Tokenizer;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.marker.ISpreadsheetControllerForChecker;
+import edu.upc.etsetb.arqsoft.spreadsheet.usecases.marker.ISpreadsheetFactoryForChecker;
 import edu.upc.etsetb.arqsoft.spreadsheet.usecases.postfix.PostfixEvaluator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class SpreadSheetController {
+public class SpreadSheetController implements ISpreadsheetControllerForChecker {
 
     protected Spreadsheet spreadsheet;
     protected SpreadsheetSaver sheetSaver;
     protected CellFactory cellFactory;
     protected ContentFactory contentFactory;
+    protected Coordinate coordinate;
     private HashMap<Coordinate, HashSet<Coordinate>> dependencies;
 
     public SpreadSheetController() {
@@ -196,5 +192,45 @@ public class SpreadSheetController {
             this.editCell(loc, expression);
         }
     }
+
+
+    /** Methods for the spreadsheet marker **/
+
+    @Override
+    public double getCellContentAsDouble(String coord) throws BadCoordinateException, NoNumberException{
+        try{
+            coordinate.cellCoordinateValidation(coord);
+        }catch (BadCoordinateException e){
+            throw new BadCoordinateException(e.getMessage());
+        }
+        try{
+            return this.spreadsheet.getCells().get(new Coordinate(coord)).getContent().getValue();
+        }catch (NoNumericValue e){
+            throw new NoNumberException(e.getMessage());
+        }
+    }
+
+    @Override
+    public String getCellContentAsString(String coord) throws BadCoordinateException{
+        try{
+            coordinate.cellCoordinateValidation(coord);
+        }catch (BadCoordinateException e){
+            throw new BadCoordinateException(e.getMessage());
+        }
+
+        Cell cell = this.spreadsheet.getCells().get(new Coordinate(coord));
+        return cell.getContent().getContent();
+    }
+
+    @Override
+    public void setCellContent(String cellCoord, String strContent) throws ContentException, BadCoordinateException, CircularDependencyException {
+        try {
+            coordinate.cellCoordinateValidation(cellCoord);
+        }catch (BadCoordinateException e){
+            throw new BadCoordinateException(e.getMessage());
+        }
+        this.editCell(cellCoord, strContent);
+    }
+
 
 }
